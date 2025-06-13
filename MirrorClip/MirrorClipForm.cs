@@ -163,14 +163,16 @@ namespace MirrorClip
             selectAreaForm.Height = item.targetH;
             if (selectAreaForm.ShowDialog() == DialogResult.Yes)
             {
+                int t = selectAreaForm.PointToScreen(Point.Empty).Y;
+                int h = selectAreaForm.Height - (t - selectAreaForm.Top - 3);
                 targetX.Text = selectAreaForm.Left.ToString();
-                targetY.Text = selectAreaForm.Top.ToString();
+                targetY.Text = t.ToString();
                 targetW.Text = selectAreaForm.Width.ToString();
-                targetH.Text = selectAreaForm.Height.ToString();
+                targetH.Text = h.ToString();
                 item.targetX = selectAreaForm.Left;
-                item.targetY = selectAreaForm.Top;
+                item.targetY = t;
                 item.targetW = selectAreaForm.Width;
-                item.targetH = selectAreaForm.Height;
+                item.targetH = h;
             }
         }
 
@@ -182,14 +184,20 @@ namespace MirrorClip
             selectAreaForm.Height = item.viewH;
             if (selectAreaForm.ShowDialog() == DialogResult.Yes)
             {
+                int t = selectAreaForm.PointToScreen(Point.Empty).Y;
+                int w = selectAreaForm.Width;
+                int h = selectAreaForm.Height;
+                float ratio = (float)w / (float)h;
+                float referenceRatio = (float)item.targetW / (float)item.targetH;
+                h = (int)(w / referenceRatio);
                 viewX.Text = selectAreaForm.Left.ToString();
                 viewY.Text = selectAreaForm.Top.ToString();
-                viewW.Text = selectAreaForm.Width.ToString();
-                viewH.Text = selectAreaForm.Height.ToString();
+                viewW.Text = w.ToString();
+                viewH.Text = h.ToString();
                 item.viewX = selectAreaForm.Left;
-                item.viewY = selectAreaForm.Top;
-                item.viewW = selectAreaForm.Width;
-                item.viewH = selectAreaForm.Height;
+                item.viewY = t;
+                item.viewW = w;
+                item.viewH = h;
             }
         }
 
