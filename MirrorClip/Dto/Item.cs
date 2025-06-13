@@ -11,6 +11,7 @@ namespace MirrorClip.Dto
         public string name;
         public int targetX, targetY, targetW, targetH;
         public int viewX, viewY, viewW, viewH;
+        public int opacity;
         public bool enable;
     }
 }

@@ -29,6 +29,7 @@ namespace MirrorClip
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MirrorClipForm));
             this.mainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.itemTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -67,6 +68,8 @@ namespace MirrorClip
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.StartButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
+            this.captureTimer = new System.Windows.Forms.Timer(this.components);
+            this.SaveButton = new System.Windows.Forms.Button();
             this.mainTableLayoutPanel.SuspendLayout();
             this.itemTableLayoutPanel.SuspendLayout();
             this.mainLayout.SuspendLayout();
@@ -534,9 +537,11 @@ namespace MirrorClip
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnCount = 3;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.Controls.Add(this.SaveButton, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.StopButton, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.StartButton, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -554,7 +559,7 @@ namespace MirrorClip
             this.StartButton.Location = new System.Drawing.Point(0, 0);
             this.StartButton.Margin = new System.Windows.Forms.Padding(0);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(301, 50);
+            this.StartButton.Size = new System.Drawing.Size(200, 50);
             this.StartButton.TabIndex = 14;
             this.StartButton.Text = "Start";
             this.StartButton.UseVisualStyleBackColor = true;
@@ -563,14 +568,30 @@ namespace MirrorClip
             // StopButton
             // 
             this.StopButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StopButton.Location = new System.Drawing.Point(301, 0);
+            this.StopButton.Location = new System.Drawing.Point(200, 0);
             this.StopButton.Margin = new System.Windows.Forms.Padding(0);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(302, 50);
+            this.StopButton.Size = new System.Drawing.Size(200, 50);
             this.StopButton.TabIndex = 15;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
             this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
+            // 
+            // captureTimer
+            // 
+            this.captureTimer.Tick += new System.EventHandler(this.captureTimer_Tick);
+            // 
+            // SaveButton
+            // 
+            this.SaveButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SaveButton.Location = new System.Drawing.Point(400, 0);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(0);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(203, 50);
+            this.SaveButton.TabIndex = 16;
+            this.SaveButton.Text = "Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
             // MirrorClipForm
             // 
@@ -581,6 +602,7 @@ namespace MirrorClip
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MirrorClipForm";
             this.Text = "MirrorClip";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MirrorClipForm_FormClosed);
             this.mainTableLayoutPanel.ResumeLayout(false);
             this.itemTableLayoutPanel.ResumeLayout(false);
             this.mainLayout.ResumeLayout(false);
@@ -636,6 +658,8 @@ namespace MirrorClip
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button StopButton;
         private System.Windows.Forms.Button StartButton;
+        private System.Windows.Forms.Timer captureTimer;
+        private System.Windows.Forms.Button SaveButton;
     }
 }
 

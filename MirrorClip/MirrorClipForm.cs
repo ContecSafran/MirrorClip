@@ -16,16 +16,21 @@ namespace MirrorClip
 {
     public partial class MirrorClipForm : Form
     {
+        
         private NotifyIcon trayIcon;
         private ContextMenuStrip trayMenu;
         private SelectAreaForm selectAreaForm = new SelectAreaForm();
         Item item;
+        CaptureProcess captureProcess = new CaptureProcess();
+        OverlayForm overlayForm = new OverlayForm();
+        ScreenCapture screenCapture = new ScreenCapture();
         public static string configFile = "config.json";
         public MirrorClipForm()
         {
             InitializeComponent();
             InitializeTrayIcon();
             LoadStatus();
+            selectAreaForm.StartPosition = FormStartPosition.Manual;
         }
         public string GetStatusTxtFileName()
         {
@@ -33,6 +38,15 @@ namespace MirrorClip
         }
         public void SaveStatus()
         {
+            item.targetX = Int32.Parse(targetX.Text);
+            item.targetY = Int32.Parse(targetY.Text);
+            item.targetW = Int32.Parse(targetW.Text);
+            item.targetH = Int32.Parse(targetH.Text);
+            item.viewX = Int32.Parse(viewX.Text);
+            item.viewY = Int32.Parse(viewY.Text);
+            item.viewW = Int32.Parse(viewW.Text);
+            item.viewH = Int32.Parse(viewH.Text);
+            item.enable = this.enableCheckBox.Checked;
             File.WriteAllText(GetStatusTxtFileName(), JsonConvert.SerializeObject(item));
         }
         public void LoadStatus()
@@ -47,7 +61,7 @@ namespace MirrorClip
                 targetW.Text = item.targetW.ToString();
                 targetH.Text = item.targetH.ToString();
                 viewX.Text = item.viewX.ToString();
-                viewY.Text = item.viewX.ToString();
+                viewY.Text = item.viewY.ToString();
                 viewW.Text = item.viewW.ToString();
                 viewH.Text = item.viewH.ToString();
                 this.enableCheckBox.Checked = item.enable;
@@ -70,7 +84,7 @@ namespace MirrorClip
                 item.targetW = Int32.Parse(targetW.Text);
                 item.targetH = Int32.Parse(targetH.Text);
                 item.viewX = Int32.Parse(viewX.Text);
-                item.viewX = Int32.Parse(viewY.Text);
+                item.viewY = Int32.Parse(viewY.Text);
                 item.viewW = Int32.Parse(viewW.Text);
                 item.viewH = Int32.Parse(viewH.Text);
                 item.enable = this.enableCheckBox.Checked;
@@ -120,7 +134,7 @@ namespace MirrorClip
             item.targetW = Int32.Parse(targetW.Text);
             item.targetH = Int32.Parse(targetH.Text);
             item.viewX = Int32.Parse(viewX.Text);
-            item.viewX = Int32.Parse(viewY.Text);
+            item.viewY = Int32.Parse(viewY.Text);
             item.viewW = Int32.Parse(viewW.Text);
             item.viewH = Int32.Parse(viewH.Text);
             item.enable = this.enableCheckBox.Checked;
@@ -143,36 +157,78 @@ namespace MirrorClip
 
         private void targetSettingButton_Click(object sender, EventArgs e)
         {
-            if(selectAreaForm.ShowDialog() == DialogResult.Yes)
+            selectAreaForm.Left = item.targetX;
+            selectAreaForm.Top = item.targetY;
+            selectAreaForm.Width = item.targetW;
+            selectAreaForm.Height = item.targetH;
+            if (selectAreaForm.ShowDialog() == DialogResult.Yes)
             {
                 targetX.Text = selectAreaForm.Left.ToString();
                 targetY.Text = selectAreaForm.Top.ToString();
                 targetW.Text = selectAreaForm.Width.ToString();
                 targetH.Text = selectAreaForm.Height.ToString();
+                item.targetX = selectAreaForm.Left;
+                item.targetY = selectAreaForm.Top;
+                item.targetW = selectAreaForm.Width;
+                item.targetH = selectAreaForm.Height;
             }
         }
 
         private void viewSettingButton_Click(object sender, EventArgs e)
         {
+            selectAreaForm.Left = item.viewX;
+            selectAreaForm.Top = item.viewY;
+            selectAreaForm.Width = item.viewW;
+            selectAreaForm.Height = item.viewH;
             if (selectAreaForm.ShowDialog() == DialogResult.Yes)
             {
                 viewX.Text = selectAreaForm.Left.ToString();
                 viewY.Text = selectAreaForm.Top.ToString();
                 viewW.Text = selectAreaForm.Width.ToString();
                 viewH.Text = selectAreaForm.Height.ToString();
+                item.viewX = selectAreaForm.Left;
+                item.viewY = selectAreaForm.Top;
+                item.viewW = selectAreaForm.Width;
+                item.viewH = selectAreaForm.Height;
             }
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
+            SaveStatus();
             targetSettingButton.Enabled = false;
             viewSettingButton.Enabled = false;
+            screenCapture.Init(item.targetX, item.targetY, item.targetW, item.targetH);
+            overlayForm.Show();
+            overlayForm.Left = item.viewX;
+            overlayForm.Top = item.viewY;
+            overlayForm.Width = item.viewW;
+            overlayForm.Height = item.viewH;
+            captureTimer.Start();
         }
 
         private void StopButton_Click(object sender, EventArgs e)
         {
             targetSettingButton.Enabled = true;
             viewSettingButton.Enabled = true;
+            captureTimer.Stop();
+            overlayForm.Hide();
+        }
+
+        private void MirrorClipForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            captureProcess.close();
+        }
+
+        private void captureTimer_Tick(object sender, EventArgs e)
+        {
+            screenCapture.Capture();
+            overlayForm.reDraw(screenCapture.bmp);
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveStatus();
         }
     }
 }
